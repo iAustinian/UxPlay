@@ -166,6 +166,13 @@ UxPlay 1.72: An open\-source AirPlay mirroring (+ audio streaming) server:
    (option to use file "fn" instead); used for client remote.
 .PP
 .TP
+\fB\-rtp\fI pipe\fRUse rtph26[4,5]pay to send decoded video elsewhere: "pipe"
+.IP
+  is the remaining pipeline, starting with rtph26*pay options:
+.IP
+  e.g. "config-interval=1 ! udpsink host=127.0.0.1 port=5000"
+.PP
+.TP
 \fB\-vdmp\fR [n] Dump h264 video output to "fn.h264"; fn="videodump", change
 .IP
    with "-vdmp [n] filename". If [n] is given, file fn.x.h264

@@ -1451,6 +1451,12 @@ Active-Remote key to file: default is \$HOME/.uxplay.dacp. (optionally
 can be changed to *filename*). Can be used by remote control
 applications. File is transient: only exists while client is connected.
 
+**-rtp *pipeline***: forward video to somewhere else, without rendering.
+Uses rtph264pay or rtph265pay as appropriate: *pipeline* should start
+with any rtph26xpay options (such as config_interval= or aggregate-mode
+=), followed by a sending method: *e.g.*,
+`"config-interval=1 ! udpsink host=127.0.0.1 port=5000`".
+
 **-vdmp** Dumps h264 video to file videodump.h264. -vdmp n dumps not
 more than n NAL units to videodump.x.h264; x= 1,2,... increases each
 time a SPS/PPS NAL unit arrives. To change the name *videodump*, use
