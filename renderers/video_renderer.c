@@ -329,20 +329,20 @@ void video_renderer_init(logger_t *render_logger, const char *server_name, video
             GString *launch = g_string_new("appsrc name=video_source ! ");
             if (jpeg_pipeline) {
                 g_string_append(launch, "jpegdec ");
-            } else if (rtp) {
-                g_string_append(launch, parser);
             } else {
                 g_string_append(launch, "queue ! ");
                 g_string_append(launch, parser);
                 g_string_append(launch, " ! ");
-                g_string_append(launch, decoder);
+                if (!rtp) {
+                    g_string_append(launch, decoder);
+                } else {
+                    g_string_append(launch, "rtph264pay ");
+                    g_string_append(launch, rtp_pipeline);
+                }
             }
-            g_string_append(launch, " ! ");
-            append_videoflip(launch, &videoflip[0], &videoflip[1]);
-            if (rtp && !jpeg_pipeline) {
-                g_string_append(launch, " rtph264pay ");
-                g_string_append(launch, rtp_pipeline);
-            } else {
+            if (!rtp || jpeg_pipeline) {
+                g_string_append(launch, " ! ");
+                append_videoflip(launch, &videoflip[0], &videoflip[1]);
                 g_string_append(launch, converter);
                 g_string_append(launch, " ! ");
                 g_string_append(launch, "videoscale ! ");
