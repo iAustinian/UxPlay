@@ -16,6 +16,13 @@
     setup on all platforms. (Python may be an appropriate language
     choice)**
 
+-   **NEW on github**: option `-vrtp <rest-of-pipeline>` transmits rtp
+    packets of decrypted h264 or h265 video to and external renderer
+    (e.g. OBS Studio) at an address specified in `rest-of-pipeline`.
+    (Note: this is video only, an option "-rtp" which muxes audio and
+    video into a mpeg4 container still needs to be created: Pull
+    Requests welcomed).
+
 -   **NEW on github**: (for Linux/\*BSD Desktop Environments using
     D-Bus). New option `-scrsv <n>` provides screensaver inhibition
     (e.g., to prevent screensaver function while watching mirrored
@@ -1276,6 +1283,12 @@ video), and only used to render audio, which will be AAC
 lossily-compressed audio in mirror mode with unrendered video, and
 superior-quality ALAC Apple Lossless audio in Airplay audio-only mode.
 
+**-vrtp *pipeline***: forward rtp packets of decrypted video to
+somewhere else, without rendering. Uses rtph264pay or rtph265pay as
+appropriate: *pipeline* should start with any rtph26xpay options (such
+as config_interval= or aggregate-mode =), followed by a sending method:
+*e.g.*, `"config-interval=1 ! udpsink host=127.0.0.1 port=5000`".
+
 **-v4l2** Video settings for hardware h264 video decoding in the GPU by
 Video4Linux2. Equivalent to `-vd v4l2h264dec -vc v4l2convert`.
 
@@ -1450,12 +1463,6 @@ recommended**.
 Active-Remote key to file: default is \$HOME/.uxplay.dacp. (optionally
 can be changed to *filename*). Can be used by remote control
 applications. File is transient: only exists while client is connected.
-
-**-rtp *pipeline***: forward video to somewhere else, without rendering.
-Uses rtph264pay or rtph265pay as appropriate: *pipeline* should start
-with any rtph26xpay options (such as config_interval= or aggregate-mode
-=), followed by a sending method: *e.g.*,
-`"config-interval=1 ! udpsink host=127.0.0.1 port=5000`".
 
 **-vdmp** Dumps h264 video to file videodump.h264. -vdmp n dumps not
 more than n NAL units to videodump.x.h264; x= 1,2,... increases each

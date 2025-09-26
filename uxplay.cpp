@@ -881,6 +881,9 @@ static void print_info (char *name) {
     printf("          gtksink,waylandsink,kmssink,fbdevsink,osxvideosink,\n");
     printf("          d3d11videosink,d3v12videosink, etc.\n");
     printf("-vs 0     Streamed audio only, with no video display window\n");
+    printf("-vrtp pl  Use rtph26[4,5]pay to send decoded video elsewhere: \"pl\"\n");
+    printf("          is the remaining pipeline, starting with rtph26*pay options:\n");
+    printf("          e.g. \"config-interval=1 ! udpsink host=127.0.0.1 port=5000\"\n");
     printf("-v4l2     Use Video4Linux2 for GPU hardware h264 decoding\n");
     printf("-bt709    Sometimes needed for Raspberry Pi models using Video4Linux2 \n");
     printf("-srgb     Display \"Full range\" [0-255] color, not \"Limited Range\"[16-235]\n");
@@ -912,9 +915,6 @@ static void print_info (char *name) {
     printf("-key [fn] Store private key in $HOME/.uxplay.pem (or in file \"fn\")\n");
     printf("-dacp [fn]Export client DACP information to file $HOME/.uxplay.dacp\n");
     printf("          (option to use file \"fn\" instead); used for client remote\n");
-    printf("-rtp pipe Use rtph26[4,5]pay to send decoded video elsewhere: \"pipe\"\n");
-    printf("          is the remaining pipeline, starting with rtph26*pay options:\n");
-    printf("          e.g. \"config-interval=1 ! udpsink host=127.0.0.1 port=5000\"\n");
     printf("-vdmp [n] Dump h264 video output to \"fn.h264\"; fn=\"videodump\",change\n");
     printf("          with \"-vdmp [n] filename\". If [n] is given, file fn.x.h264\n");
     printf("          x=1,2,.. opens whenever a new SPS/PPS NAL arrives, and <=n\n");
@@ -1302,9 +1302,9 @@ static void parse_arguments (int argc, char *argv[]) {
                 fprintf(stderr, "invalid \"-reset %s\"; -reset n must have n >= 0,  default n = %d seconds\n", argv[i], MISSED_FEEDBACK_LIMIT);
                 exit(1);
             }
-	} else if (arg == "-rtp") {
+	} else if (arg == "-vrtp") {
 	  if (!option_has_value(i, argc, arg, argv[i+1])) {
-	    fprintf(stderr,"option \"-rtp\" must be followed by a pipeline for sending the video stream:\n"
+	    fprintf(stderr,"option \"-vrtp\" must be followed by a pipeline for sending the video stream:\n"
 		    "e.g., \"<rtph26[4,5]pay options> ! udpsink host=127.0.0.1 port -= 5000\"\n");
 	    exit(1);
           }

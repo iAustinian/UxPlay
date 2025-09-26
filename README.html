@@ -21,6 +21,12 @@ href="#bluetooth-le-beacon-setup">given below</a>. <strong>It is hoped
 that users will submit Pull Requests contributing scripts for automating
 beacon setup on all platforms. (Python may be an appropriate language
 choice)</strong></p></li>
+<li><p><strong>NEW on github</strong>: option
+<code>-vrtp &lt;rest-of-pipeline&gt;</code> transmits rtp packets of
+decrypted h264 or h265 video to and external renderer (e.g. OBS Studio)
+at an address specified in <code>rest-of-pipeline</code>. (Note: this is
+video only, an option “-rtp” which muxes audio and video into a mpeg4
+container still needs to be created: Pull Requests welcomed).</p></li>
 <li><p><strong>NEW on github</strong>: (for Linux/*BSD Desktop
 Environments using D-Bus). New option <code>-scrsv &lt;n&gt;</code>
 provides screensaver inhibition (e.g., to prevent screensaver function
@@ -1250,6 +1256,12 @@ display video), and only used to render audio, which will be AAC
 lossily-compressed audio in mirror mode with unrendered video, and
 superior-quality ALAC Apple Lossless audio in Airplay audio-only
 mode.</p>
+<p><strong>-vrtp <em>pipeline</em></strong>: forward rtp packets of
+decrypted video to somewhere else, without rendering. Uses rtph264pay or
+rtph265pay as appropriate: <em>pipeline</em> should start with any
+rtph26xpay options (such as config_interval= or aggregate-mode =),
+followed by a sending method: <em>e.g.</em>,
+<code>"config-interval=1 ! udpsink host=127.0.0.1 port=5000</code>“.</p>
 <p><strong>-v4l2</strong> Video settings for hardware h264 video
 decoding in the GPU by Video4Linux2. Equivalent to
 <code>-vd v4l2h264dec -vc v4l2convert</code>.</p>
@@ -1412,12 +1424,6 @@ DACP-ID and Active-Remote key to file: default is $HOME/.uxplay.dacp.
 (optionally can be changed to <em>filename</em>). Can be used by remote
 control applications. File is transient: only exists while client is
 connected.</p>
-<p><strong>-rtp <em>pipeline</em></strong>: forward video to somewhere
-else, without rendering. Uses rtph264pay or rtph265pay as appropriate:
-<em>pipeline</em> should start with any rtph26xpay options (such as
-config_interval= or aggregate-mode =), followed by a sending method:
-<em>e.g.</em>,
-<code>"config-interval=1 ! udpsink host=127.0.0.1 port=5000</code>“.</p>
 <p><strong>-vdmp</strong> Dumps h264 video to file videodump.h264. -vdmp
 n dumps not more than n NAL units to videodump.x.h264; x= 1,2,…
 increases each time a SPS/PPS NAL unit arrives. To change the name
