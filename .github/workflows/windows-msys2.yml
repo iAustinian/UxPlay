@@ -1,0 +1,65 @@
+name: Build UxPlay (Windows MSYS2)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ master ]
+  pull_request: {}
+
+jobs:
+  build:
+    name: Build with MSYS2 UCRT64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2 (UCRT64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+
+      - name: Install dependencies (pacman)
+        shell: bash -lc
+        run: |
+          pacman -S --noconfirm --needed \
+            mingw-w64-ucrt-x86_64-cmake \
+            mingw-w64-ucrt-x86_64-gcc \
+            mingw-w64-ucrt-x86_64-gcc-libs \
+            mingw-w64-ucrt-x86_64-gcc-fortran \
+            mingw-w64-ucrt-x86_64-gcc-ada \
+            mingw-w64-ucrt-x86_64-pkg-config \
+            mingw-w64-ucrt-x86_64-libplist \
+            mingw-w64-ucrt-x86_64-openssl \
+            mingw-w64-ucrt-x86_64-gstreamer \
+            mingw-w64-ucrt-x86_64-gst-plugins-base \
+            mingw-w64-ucrt-x86_64-gst-plugins-good \
+            mingw-w64-ucrt-x86_64-gst-plugins-bad \
+            mingw-w64-ucrt-x86_64-python \
+            mingw-w64-ucrt-x86_64-python-gobject
+
+      - name: Configure with CMake
+        shell: bash -lc
+        run: |
+          mkdir -p build && cd build
+          CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/x86_64-w64-mingw32 ..
+
+      - name: Build uxplay
+        shell: bash -lc
+        run: |
+          cd build
+          cmake --build . --config Release -j$(nproc)
+
+      - name: Package executable
+        shell: bash -lc
+        run: |
+          cd build
+          if [ -f uxplay.exe ]; then zip -r uxplay-windows-x86_64.zip uxplay.exe; ls -la uxplay.exe; else echo "uxplay.exe not found"; exit 1; fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uxplay-windows-x86_64
+          path: build/uxplay-windows-x86_64.zip
